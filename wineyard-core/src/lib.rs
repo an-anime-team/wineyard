@@ -1,14 +1,16 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+#[cfg(feature = "network")]
+pub use reqwest;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[cfg(feature = "network")]
+pub mod network;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+#[cfg(feature = "archives")]
+pub mod archives;
+
+pub mod prelude {
+    #[cfg(feature = "archives")]
+    pub use super::archives::{
+        Archive,
+        ArchiveExtractionContext
+    };
 }

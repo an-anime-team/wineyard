@@ -6,4 +6,63 @@ license = "GPL-3.0"
 edition = "2024"
 publish = false
 
+[features]
+network = [
+    "dep:tokio",
+    "dep:reqwest"
+]
+network-all = [
+    "network-downloader"
+]
+network-downloader = ["network"]
+
+archives = []
+archives-all = [
+    "archives-tar",
+    "archives-zip",
+    "archives-7z"
+]
+archives-tar = ["archives"]
+archives-zip = ["archives"]
+archives-7z = ["archives"]
+
+default = [
+    "network-all",
+    "archives-all"
+]
+
+[dependencies.tokio]
+package = "tokio"
+version = "1.44"
+features = [
+    "rt-multi-thread",
+    "macros",
+    "fs",
+    "io-std"
+]
+optional = true
+
+[dependencies.reqwest]
+package = "reqwest"
+version = "0.12"
+default-features = false
+features = [
+    "charset",
+    "brotli",
+    "deflate",
+    "gzip",
+    "zstd",
+    "http2",
+    "stream",
+    "socks",
+    "system-proxy",
+    "rustls-tls",
+    "rustls-tls-native-roots"
+]
+optional = true
+
 [dependencies]
+thiserror = "1.0"
+lazy_static = "1.5"
+flume = "0.11"
+futures = "0.3"
