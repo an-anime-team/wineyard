@@ -38,7 +38,10 @@ hashes-all = [
     "hashes-xxh",
     "hashes-md5",
     "hashes-sha1",
-    "hashes-sha2"
+    "hashes-sha2",
+    "hashes-sha3",
+    "hashes-blake2",
+    "hashes-blake3"
 ]
 hashes-seahash = ["hashes", "dep:seahash"]
 hashes-crc32 = ["hashes", "dep:crc32fast"]
@@ -48,6 +51,9 @@ hashes-xxh = ["hashes", "dep:xxhash-rust"]
 hashes-md5 = ["hashes", "dep:md-5"]
 hashes-sha1 = ["hashes", "dep:sha1"]
 hashes-sha2 = ["hashes", "dep:sha2"]
+hashes-sha3 = ["hashes", "dep:sha3"]
+hashes-blake2 = ["hashes", "dep:blake2"]
+hashes-blake3 = ["hashes", "dep:blake3"]
 
 default = [
     "network-all",
@@ -98,3 +104,6 @@ xxhash-rust = { version = "0.8", features = ["xxh32", "xxh64", "xxh3"], optional
 md-5 = { version = "0.10", features = ["asm"], optional = true }
 sha1 = { version = "0.10", features = ["asm"], optional = true }
 sha2 = { version = "0.10", features = ["asm"], optional = true }
+sha3 = { version = "0.10", features = ["asm"], optional = true }
+blake2 = { version = "0.10", optional = true }
+blake3 = { version = "1.8", optional = true }

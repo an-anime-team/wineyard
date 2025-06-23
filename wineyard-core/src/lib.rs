@@ -47,5 +47,14 @@ pub mod export {
 
         #[cfg(feature = "hashes-sha2")]
         pub use sha2;
+
+        #[cfg(feature = "hashes-sha3")]
+        pub use sha3;
+
+        #[cfg(feature = "hashes-blake2")]
+        pub use blake2;
+
+        #[cfg(feature = "hashes-blake3")]
+        pub use blake3;
     }
 }
