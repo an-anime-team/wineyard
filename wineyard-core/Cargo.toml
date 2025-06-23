@@ -12,12 +12,14 @@ network = [
     "dep:reqwest"
 ]
 network-all = [
+    "network",
     "network-downloader"
 ]
 network-downloader = ["network"]
 
 archives = []
 archives-all = [
+    "archives",
     "archives-tar",
     "archives-zip",
     "archives-7z"
@@ -26,9 +28,31 @@ archives-tar = ["archives"]
 archives-zip = ["archives"]
 archives-7z = ["archives"]
 
+hashes = []
+hashes-all = [
+    "hashes",
+    "hashes-seahash",
+    "hashes-crc32",
+    "hashes-crc32c",
+    "hashes-siphash",
+    "hashes-xxh",
+    "hashes-md5",
+    "hashes-sha1",
+    "hashes-sha2"
+]
+hashes-seahash = ["hashes", "dep:seahash"]
+hashes-crc32 = ["hashes", "dep:crc32fast"]
+hashes-crc32c = ["hashes", "dep:crc32c"]
+hashes-siphash = ["hashes", "dep:siphasher"]
+hashes-xxh = ["hashes", "dep:xxhash-rust"]
+hashes-md5 = ["hashes", "dep:md-5"]
+hashes-sha1 = ["hashes", "dep:sha1"]
+hashes-sha2 = ["hashes", "dep:sha2"]
+
 default = [
     "network-all",
-    "archives-all"
+    "archives-all",
+    "hashes-all"
 ]
 
 [dependencies.tokio]
@@ -64,3 +88,13 @@ optional = true
 [dependencies]
 thiserror = "1.0"
 lazy_static = "1.5"
+
+# Hashes
+seahash = { version = "4.1", optional = true }
+crc32fast = { version = "1.4", optional = true }
+crc32c = { version = "0.6", optional = true }
+siphasher = { version = "1.0", optional = true }
+xxhash-rust = { version = "0.8", features = ["xxh32", "xxh64", "xxh3"], optional = true }
+md-5 = { version = "0.10", features = ["asm"], optional = true }
+sha1 = { version = "0.10", features = ["asm"], optional = true }
+sha2 = { version = "0.10", features = ["asm"], optional = true }

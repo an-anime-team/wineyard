@@ -37,6 +37,7 @@ pub enum SevenzArchiveError {
 }
 
 /// Simple wrapper around `7z` binary.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SevenzArchive {
     path: PathBuf
 }

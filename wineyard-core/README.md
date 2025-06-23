@@ -21,3 +21,19 @@ Network support: `network`.
 | ---------- | -------------------- |
 | All        | `network-all`        |
 | Downloader | `network-downloader` |
+
+## Hashes
+
+Hashes support: `hashes`.
+
+| Algorithm | Feature          |
+| --------- | ---------------- |
+| All       | `hashes-all`     |
+| `seahash` | `hashes-seahash` |
+| `crc32`   | `hashes-crc32`   |
+| `crc32c`  | `hashes-crc32c`  |
+| `siphash` | `hashes-siphash` |
+| `xxh`     | `hashes-xxh`     |
+| `md5`     | `hashes-md5`     |
+| `sha1`    | `hashes-sha1`    |
+| `sha2`    | `hashes-sha2`    |

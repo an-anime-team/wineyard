@@ -9,6 +9,7 @@ use std::io::{BufRead, BufReader};
 use super::*;
 
 /// Simple wrapper around `unzip` binary.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ZipArchive {
     path: PathBuf
 }
