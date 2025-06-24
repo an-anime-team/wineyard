@@ -26,14 +26,17 @@ Network support: `network`.
 
 Hashes support: `hashes`.
 
-| Algorithm | Feature          |
-| --------- | ---------------- |
-| All       | `hashes-all`     |
-| `seahash` | `hashes-seahash` |
-| `crc32`   | `hashes-crc32`   |
-| `crc32c`  | `hashes-crc32c`  |
-| `siphash` | `hashes-siphash` |
-| `xxh`     | `hashes-xxh`     |
-| `md5`     | `hashes-md5`     |
-| `sha1`    | `hashes-sha1`    |
-| `sha2`    | `hashes-sha2`    |
+| Algorithm                 | Feature          |
+| ------------------------- | ---------------- |
+| All                       | `hashes-all`     |
+| `seahash`                 | `hashes-seahash` |
+| `crc32`                   | `hashes-crc32`   |
+| `crc32c`                  | `hashes-crc32c`  |
+| `siphash`                 | `hashes-siphash` |
+| `xxh`                     | `hashes-xxh`     |
+| `md5`                     | `hashes-md5`     |
+| `sha1`                    | `hashes-sha1`    |
+| `sha2`                    | `hashes-sha2`    |
+| `sha3`, `keccak`, `shake` | `hashes-sha3`    |
+| `blake2s`, `blake2b`      | `hashes-blake2`  |
+| `blake3`                  | `hashes-blake3`  |
