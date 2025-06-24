@@ -1,5 +1,7 @@
 use std::path::{Path, PathBuf};
 
+pub mod universal;
+
 #[cfg(feature = "archives-tar")]
 pub mod tar;
 
@@ -8,13 +10,6 @@ pub mod zip;
 
 #[cfg(feature = "archives-7z")]
 pub mod sevenz;
-
-#[cfg(any(
-    feature = "archives-tar",
-    feature = "archives-zip",
-    feature = "archives-7z"
-))]
-pub mod universal;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ArchiveEntry {
