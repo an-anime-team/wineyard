@@ -15,8 +15,8 @@ pub mod compression;
 
 #[cfg(any(
     feature = "network",
-    feature = "archives",
-    feature = "hashes"
+    feature = "hashes",
+    feature = "compression"
 ))]
 pub mod export {
     //! Re-exports of core library dependencies.
