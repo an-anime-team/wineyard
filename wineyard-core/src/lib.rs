@@ -1,3 +1,6 @@
+pub mod rw_sync;
+pub mod buffer;
+
 #[cfg(feature = "network")]
 pub mod network;
 
@@ -6,6 +9,9 @@ pub mod archives;
 
 #[cfg(feature = "hashes")]
 pub mod hashes;
+
+#[cfg(feature = "compression")]
+pub mod compression;
 
 #[cfg(any(
     feature = "network",
@@ -56,5 +62,22 @@ pub mod export {
 
         #[cfg(feature = "hashes-blake3")]
         pub use blake3;
+    }
+
+    #[cfg(feature = "compression")]
+    pub mod compression {
+        //! Re-exports of the `compression` feature dependencies.
+
+        #[cfg(feature = "compression-lz4")]
+        pub use lz4_flex as lz4;
+
+        #[cfg(feature = "compression-bzip2")]
+        pub use bzip2;
+
+        #[cfg(feature = "compression-deflate")]
+        pub use flate2 as deflate;
+
+        #[cfg(feature = "compression-zstd")]
+        pub use zstd;
     }
 }

@@ -2,6 +2,7 @@ use std::io::Write;
 
 use super::{HashAlgorithm, Hasher};
 
+#[allow(unused)]
 fn test(
     algorithm: HashAlgorithm,
     seed: &[u8],

@@ -40,3 +40,15 @@ Hashes support: `hashes`.
 | `sha3`, `keccak`, `shake` | `hashes-sha3`    |
 | `blake2s`, `blake2b`      | `hashes-blake2`  |
 | `blake3`                  | `hashes-blake3`  |
+
+## Compression
+
+Compression support: `compression`.
+
+| Algorithm                 | Feature               |
+| ------------------------- | --------------------- |
+| All                       | `compression-all`     |
+| `lz4`                     | `compression-lz4`     |
+| `bzip2`                   | `compression-bzip2`   |
+| `deflate`, `gzip`, `zlib` | `compression-deflate` |
+| `zstd`                    | `compression-zstd`    |
