@@ -67,7 +67,7 @@ impl std::str::FromStr for CompressionAlgorithm {
             "deflate" => Ok(Self::Deflate),
 
             #[cfg(feature = "compression-deflate")]
-            "gzip" => Ok(Self::Gzip),
+            "gzip" | "gz" => Ok(Self::Gzip),
 
             #[cfg(feature = "compression-deflate")]
             "zlib" => Ok(Self::Zlib),

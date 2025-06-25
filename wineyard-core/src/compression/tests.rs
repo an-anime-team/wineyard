@@ -17,8 +17,10 @@ fn test(algorithm: CompressionAlgorithm) -> Result<(), CompressionError> {
         let mut compressor = Compressor::new(algorithm, *level)?;
         let mut decompressor = Decompressor::new(algorithm)?;
 
-        compressor.write_all(b"Hello, ")?;
-        compressor.write_all(b"World! ")?;
+        compressor.write_all(b"AAAAAAAAAAAAAAAAAAAA")?;
+        compressor.write_all(b"AAAAAAAAAAAAAAAAAAAA")?;
+        compressor.write_all(b"AAAAAAAAAAAAAAAAAAAA")?;
+        compressor.write_all(b"AAAAAAAAAAAAAAAAAAAA")?;
         compressor.write_all(b"AAAAAAAAAAAAAAAAAAAA")?;
         compressor.flush()?;
         compressor.try_finish()?;
@@ -27,6 +29,8 @@ fn test(algorithm: CompressionAlgorithm) -> Result<(), CompressionError> {
 
         compressor.read_to_end(&mut compressed)?;
 
+        assert!(compressed.len() < 100);
+
         decompressor.write_all(&compressed)?;
         decompressor.flush()?;
 
@@ -34,7 +38,7 @@ fn test(algorithm: CompressionAlgorithm) -> Result<(), CompressionError> {
 
         decompressor.read_to_end(&mut decompressed)?;
 
-        assert_eq!(decompressed, b"Hello, World! AAAAAAAAAAAAAAAAAAAA");
+        assert_eq!(decompressed, b"AAAAAAAAAAAAAAAAAAAA".repeat(5));
     }
 
     Ok(())

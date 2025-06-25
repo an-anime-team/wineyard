@@ -16,7 +16,7 @@ pub enum Decompressor {
     Deflate(flate2::read::DeflateDecoder<Buffer>),
 
     #[cfg(feature = "compression-deflate")]
-    Gzip(flate2::read::MultiGzDecoder<Buffer>),
+    Gzip(flate2::write::MultiGzDecoder<Buffer>),
 
     #[cfg(feature = "compression-deflate")]
     Zlib(flate2::read::ZlibDecoder<Buffer>),
@@ -59,7 +59,7 @@ impl Decompressor {
 
             #[cfg(feature = "compression-deflate")]
             CompressionAlgorithm::Gzip => {
-                let decompressor = flate2::read::MultiGzDecoder::new(buf);
+                let decompressor = flate2::write::MultiGzDecoder::new(buf);
 
                 Ok(Self::Gzip(decompressor))
             }
@@ -121,7 +121,7 @@ impl Write for Decompressor {
             Self::Deflate(decompressor) => decompressor.get_mut().write(buf),
 
             #[cfg(feature = "compression-deflate")]
-            Self::Gzip(decompressor) => decompressor.get_mut().write(buf),
+            Self::Gzip(decompressor) => decompressor.write(buf),
 
             #[cfg(feature = "compression-deflate")]
             Self::Zlib(decompressor) => decompressor.get_mut().write(buf),
@@ -143,7 +143,7 @@ impl Write for Decompressor {
             Self::Deflate(decompressor) => decompressor.get_mut().flush(),
 
             #[cfg(feature = "compression-deflate")]
-            Self::Gzip(decompressor) => decompressor.get_mut().flush(),
+            Self::Gzip(decompressor) => decompressor.flush(),
 
             #[cfg(feature = "compression-deflate")]
             Self::Zlib(decompressor) => decompressor.get_mut().flush(),
@@ -167,7 +167,7 @@ impl Read for Decompressor {
             Self::Deflate(decompressor) => decompressor.read(buf),
 
             #[cfg(feature = "compression-deflate")]
-            Self::Gzip(decompressor) => decompressor.read(buf),
+            Self::Gzip(decompressor) => decompressor.get_mut().read(buf),
 
             #[cfg(feature = "compression-deflate")]
             Self::Zlib(decompressor) => decompressor.read(buf),
