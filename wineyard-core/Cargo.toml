@@ -7,8 +7,10 @@ edition = "2024"
 publish = false
 
 [features]
+tasks = ["dep:tokio"]
+
 network = [
-    "dep:tokio",
+    "tasks",
     "dep:reqwest"
 ]
 network-all = [
@@ -69,6 +71,7 @@ compression-deflate = ["dep:flate2"]
 compression-zstd = ["dep:zstd"]
 
 default = [
+    "tasks",
     "network-all",
     "archives-all",
     "hashes-all",

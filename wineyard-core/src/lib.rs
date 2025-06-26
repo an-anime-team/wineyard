@@ -1,6 +1,8 @@
 pub mod rw_sync;
 pub mod buffer;
 
+pub mod tasks;
+
 #[cfg(feature = "network")]
 pub mod network;
 
@@ -21,11 +23,17 @@ pub mod compression;
 pub mod export {
     //! Re-exports of core library dependencies.
 
+    #[cfg(feature = "tasks")]
+    pub mod tasks {
+        //! Re-exports of the `tasks` feature dependencies.
+
+        pub use tokio;
+    }
+
     #[cfg(feature = "network")]
     pub mod network {
         //! Re-exports of the `network` feature dependencies.
 
-        pub use tokio;
         pub use reqwest;
     }
 

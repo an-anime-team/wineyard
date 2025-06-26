@@ -7,7 +7,6 @@ use std::io::SeekFrom;
 use tokio::fs::File;
 use tokio::io::{AsyncSeekExt, AsyncWriteExt, BufWriter};
 use tokio::task::{JoinError, JoinHandle};
-use tokio::runtime::Runtime;
 use reqwest::Client;
 
 // TODO: make a global vector of atomics for all active downloads.
@@ -20,12 +19,6 @@ use reqwest::Client;
 const DOWNLOADER_CHUNKS_REQUESTS_TIMEOUT: Option<Duration> = None;
 
 lazy_static::lazy_static! {
-    static ref RUNTIME: Runtime = tokio::runtime::Builder::new_multi_thread()
-        .thread_name("downloader")
-        .enable_all()
-        .build()
-        .expect("Failed to create download tasks runtime");
-
     static ref CLIENT: Client = Client::new();
 }
 
@@ -125,7 +118,7 @@ impl Downloader {
             let total = total.clone();
             let aborted = aborted.clone();
 
-            RUNTIME.spawn(async move {
+            crate::tasks::spawn(async move {
                 // Open output file.
                 let output_file = File::options()
                     .read(true)

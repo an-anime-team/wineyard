@@ -2,6 +2,10 @@
 
 Standard abstractions provider.
 
+## Tasks
+
+Async tasks executor: `tasks`.
+
 ## Archives
 
 Archive formats support: `archives`.
