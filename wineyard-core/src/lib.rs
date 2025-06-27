@@ -16,6 +16,7 @@ pub mod hashes;
 pub mod compression;
 
 #[cfg(any(
+    feature = "tasks",
     feature = "network",
     feature = "hashes",
     feature = "compression"

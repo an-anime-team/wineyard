@@ -7,6 +7,7 @@ edition = "2024"
 publish = false
 
 [features]
+tracing = ["dep:tracing"]
 tasks = ["dep:tokio"]
 
 network = [
@@ -71,6 +72,7 @@ compression-deflate = ["dep:flate2"]
 compression-zstd = ["dep:zstd"]
 
 default = [
+    "tracing",
     "tasks",
     "network-all",
     "archives-all",
@@ -111,6 +113,9 @@ optional = true
 [dependencies]
 thiserror = "1.0"
 lazy_static = "1.5"
+
+# Tracing
+tracing = { version = "0.1", optional = true }
 
 # Hashes
 seahash = { version = "4.1", optional = true }

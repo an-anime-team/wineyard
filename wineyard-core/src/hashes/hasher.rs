@@ -120,7 +120,12 @@ pub enum Hasher {
 impl Hasher {
     /// Create new hasher from the algorithm.
     pub fn new(algorithm: impl Into<HashAlgorithm>) -> Self {
-        match algorithm.into() {
+        let algorithm: HashAlgorithm = algorithm.into();
+
+        #[cfg(feature = "tracing")]
+        tracing::trace!(?algorithm, "create hasher");
+
+        match algorithm {
             #[cfg(feature = "hashes-seahash")]
             HashAlgorithm::Seahash => Self::Seahash(Default::default()),
 
@@ -253,6 +258,12 @@ impl Hasher {
         algorithm: impl Into<HashAlgorithm>,
         seed: impl AsRef<[u8]>
     ) -> Self {
+        let algorithm: HashAlgorithm = algorithm.into();
+        let seed = seed.as_ref();
+
+        #[cfg(feature = "tracing")]
+        tracing::trace!(?algorithm, ?seed, "create seeded hasher");
+
         fn get_seed<const SIZE: usize>(seed: impl AsRef<[u8]>) -> [u8; SIZE] {
             let mut output = [0; SIZE];
 
@@ -266,7 +277,7 @@ impl Hasher {
             output
         }
 
-        match algorithm.into() {
+        match algorithm {
             #[cfg(feature = "hashes-seahash")]
             HashAlgorithm::Seahash => {
                 let seed = get_seed::<32>(seed);
@@ -487,14 +498,14 @@ impl Hasher {
 
             #[cfg(feature = "hashes-sha3")]
             HashAlgorithm::CShake_128 => {
-                let hasher = sha3::CShake128::from_core(sha3::CShake128Core::new(seed.as_ref()));
+                let hasher = sha3::CShake128::from_core(sha3::CShake128Core::new(seed));
 
                 Self::CShake_128(hasher)
             }
 
             #[cfg(feature = "hashes-sha3")]
             HashAlgorithm::CShake_256 => {
-                let hasher = sha3::CShake256::from_core(sha3::CShake256Core::new(seed.as_ref()));
+                let hasher = sha3::CShake256::from_core(sha3::CShake256Core::new(seed));
 
                 Self::CShake_256(hasher)
             }
@@ -727,6 +738,9 @@ impl Hasher {
     /// entire buffer while others allow to continue using it. If buffer is not
     /// consumed - the hasher struct will be returned as `Some` in the pair.
     pub fn finalize(self) -> (Box<[u8]>, Option<Self>) {
+        #[cfg(feature = "tracing")]
+        tracing::trace!(algorithm = ?self.algorithm(), "finalize hash");
+
         match self {
             #[cfg(feature = "hashes-seahash")]
             Self::Seahash(hasher) => {

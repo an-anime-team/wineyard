@@ -78,11 +78,16 @@ impl Default for Downloader {
 
 impl Downloader {
     /// Create new file downloader using shared reqwest client.
+    #[inline]
     pub fn new() -> Self {
+        #[cfg(feature = "tracing")]
+        tracing::trace!("create default downloader");
+
         Self(CLIENT.clone())
     }
 
     /// Create new file downloader from the given reqwest client.
+    #[inline(always)]
     pub const fn from_client(client: Client) -> Self {
         Self(client)
     }
@@ -104,14 +109,22 @@ impl Downloader {
         output_file: impl Into<PathBuf>,
         options: DownloadOptions
     ) -> DownloaderTask {
+        let url = url.to_string();
+        let output_file: PathBuf = output_file.into();
+
+        #[cfg(feature = "tracing")]
+        tracing::trace!(
+            ?url,
+            ?output_file,
+            continue_download = options.continue_download,
+            "start downloading"
+        );
+
         let current = Arc::new(AtomicU64::new(0));
         let total = Arc::new(AtomicU64::new(0));
         let aborted = Arc::new(AtomicBool::new(false));
 
         let client = self.0.clone();
-
-        let url = url.to_string();
-        let output_file: PathBuf = output_file.into();
 
         let task = {
             let current = current.clone();

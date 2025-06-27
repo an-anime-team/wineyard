@@ -28,7 +28,11 @@ default = [
 [dependencies.wineyard-core]
 path = "../wineyard-core"
 default-features = false
-features = ["network-downloader"]
+features = [
+    "tracing",
+    "tasks",
+    "network-downloader"
+]
 
 [dependencies.mlua]
 package = "mlua"

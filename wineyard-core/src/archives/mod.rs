@@ -29,10 +29,7 @@ pub enum ArchiveError {
     UnsupportedFormat(String),
 
     #[error("failed to extract archive: {0}")]
-    ExtractionError(&'static str),
-
-    #[error(transparent)]
-    Other(Box<dyn std::error::Error + Send + 'static>)
+    ExtractionError(&'static str)
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -80,6 +77,9 @@ impl Archive {
     ) -> Option<Self> {
         let path: PathBuf = path.into();
 
+        #[cfg(feature = "tracing")]
+        tracing::trace!(?path, ?format, "open archive");
+
         match format {
             #[cfg(feature = "archives-tar")]
             ArchiveFormat::Tar => Some(Self::Tar(path)),
@@ -95,8 +95,25 @@ impl Archive {
         }
     }
 
+    /// Get path of the currently open archive.
+    pub const fn path(&self) -> &PathBuf {
+        match self {
+            #[cfg(feature = "archives-tar")]
+            Self::Tar(path) => path,
+
+            #[cfg(feature = "archives-zip")]
+            Self::Zip(path) => path,
+
+            #[cfg(feature = "archives-7z")]
+            Self::Sevenz(path) => path
+        }
+    }
+
     /// Get list of archive entries.
     pub fn get_entries(&self) -> Result<Vec<ArchiveEntry>, ArchiveError> {
+        #[cfg(feature = "tracing")]
+        tracing::trace!(path = ?self.path(), "get archive entries");
+
         match self {
             #[cfg(feature = "archives-tar")]
             Self::Tar(archive) => tar::get_entries(archive),
@@ -125,6 +142,11 @@ impl Archive {
         folder: impl AsRef<Path>,
         progress: fn(u64, u64, u64)
     ) -> Result<ArchiveExtractor, ArchiveError> {
+        let folder = folder.as_ref();
+
+        #[cfg(feature = "tracing")]
+        tracing::trace!(path = ?self.path(), output = ?folder, "extract archive");
+
         match self {
             #[cfg(feature = "archives-tar")]
             Self::Tar(archive) => tar::extract(archive, folder, progress),

@@ -33,9 +33,13 @@ impl Decompressor {
     pub fn new(
         algorithm: impl Into<CompressionAlgorithm>
     ) -> Result<Self, CompressionError> {
+        let algorithm: CompressionAlgorithm = algorithm.into();
         let buf = Buffer::default();
 
-        match algorithm.into() {
+        #[cfg(feature = "tracing")]
+        tracing::trace!(?algorithm, "create decompressor");
+
+        match algorithm {
             #[cfg(feature = "compression-lz4")]
             CompressionAlgorithm::Lz4 => {
                 let decompressor = lz4_flex::frame::FrameDecoder::new(buf);

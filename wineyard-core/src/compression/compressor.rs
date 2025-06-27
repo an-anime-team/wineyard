@@ -33,6 +33,9 @@ impl Compressor {
         let algorithm: CompressionAlgorithm = algorithm.into();
         let level: CompressionLevel = level.into();
 
+        #[cfg(feature = "tracing")]
+        tracing::trace!(?algorithm, ?level, "create compressor");
+
         let buf = Buffer::default();
 
         match algorithm {
