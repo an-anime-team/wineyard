@@ -6,11 +6,46 @@ license = "GPL-3.0"
 edition = "2024"
 publish = false
 
-[dependencies]
-wineyard-core = { path = "../wineyard-core" }
+[features]
+packages-resolver = ["wineyard-core/archives-all"]
 
+runtime = [
+    "wineyard-core/hashes-all",
+    "wineyard-core/compression-all",
+    "dep:mlua",
+    "dep:bufreaderwriter",
+    "dep:rusqlite",
+    "dep:hex",
+    "dep:base64",
+    "dep:encoding_rs"
+]
+
+default = [
+    "packages-resolver",
+    "runtime"
+]
+
+[dependencies.wineyard-core]
+path = "../wineyard-core"
+default-features = false
+features = ["network-downloader"]
+
+[dependencies.mlua]
+package = "mlua"
+version = "0.10"
+features = ["luau-jit", "serialize", "send", "error-send"]
+optional = true
+
+[dependencies]
 thiserror = "1.0"
 rand = "0.9"
 base32 = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
+
+bufreaderwriter = { version = "0.2.4", optional = true }
+rusqlite = { version = "0.34", features = ["bundled"], optional = true }
+
+hex = { version = "0.4", optional = true }
+base64 = { version = "0.22", optional = true }
+encoding_rs = { version = "0.8", optional = true }

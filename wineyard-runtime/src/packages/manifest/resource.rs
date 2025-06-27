@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::{Serialize, Deserialize};
 
-use wineyard_core::archives::universal::ArchiveFormat;
+use wineyard_core::archives::ArchiveFormat;
 
 use crate::hash::{Hash, AsHash};
 

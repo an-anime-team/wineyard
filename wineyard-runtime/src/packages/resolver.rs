@@ -1,13 +1,10 @@
 use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
 
 use wineyard_core::network::downloader::{
     Downloader, DownloadOptions, DownloaderError
 };
-use wineyard_core::archives::{Archive, ArchiveExtractionContext};
-use wineyard_core::archives::tar::TarArchive;
-use wineyard_core::archives::zip::ZipArchive;
-use wineyard_core::archives::sevenz::SevenzArchive;
-use wineyard_core::archives::universal::extract as extract_archive;
+use wineyard_core::archives::{Archive, ArchiveFormat, ArchiveError};
 
 use toml::Table as TomlTable;
 
@@ -29,8 +26,11 @@ pub enum PackagesResolverError {
     #[error(transparent)]
     DownloaderError(#[from] DownloaderError),
 
-    #[error("failed to extract archive: {0}")]
-    ArchiveExtractionError(String),
+    #[error("archive format is not supported: {0:?}")]
+    ArchiveNotSupported(PathBuf),
+
+    #[error(transparent)]
+    ArchiveError(#[from] ArchiveError),
 
     #[error(transparent)]
     LockFileError(#[from] LockFileError),
@@ -364,59 +364,38 @@ impl PackagesResolver {
 
                     ResourceFormat::Archive(_) => {
                         // Extract the archive to a temp folder.
-                        let tmp_extract_path = store.get_temp_path(&Hash::rand());
+                        let temp_extract_path = store.get_temp_path(&Hash::rand());
 
-                        match resource.format {
-                            ResourceFormat::Archive(ResourceArchiveFormat::Auto) => {
-                                extract_archive(&temp_path, &tmp_extract_path, |_, _, _| {})
-                                    .map_err(|err| {
-                                        PackagesResolverError::ArchiveExtractionError(err.to_string())
-                                    })?;
-                            }
+                        let format = match resource.format {
+                            ResourceFormat::Archive(ResourceArchiveFormat::Auto) => None,
 
-                            ResourceFormat::Archive(ResourceArchiveFormat::Tar) => {
-                                TarArchive::open(&temp_path)?
-                                    .extract(&tmp_extract_path, |_, _, _| {})?
-                                    .wait()
-                                    .map_err(|err| {
-                                        PackagesResolverError::ArchiveExtractionError(err.to_string())
-                                    })?;
-                            }
-
-                            ResourceFormat::Archive(ResourceArchiveFormat::Zip) => {
-                                ZipArchive::open(&temp_path)?
-                                    .extract(&tmp_extract_path, |_, _, _| {})?
-                                    .wait()
-                                    .map_err(|err| {
-                                        PackagesResolverError::ArchiveExtractionError(err.to_string())
-                                    })?;
-                            }
-
-                            ResourceFormat::Archive(ResourceArchiveFormat::Sevenz) => {
-                                SevenzArchive::open(&temp_path)
-                                    .and_then(|archive| archive.extract(&tmp_extract_path, |_, _, _| {}))
-                                    .map(|extractor| extractor.wait())
-                                    .map_err(|err| {
-                                        PackagesResolverError::ArchiveExtractionError(err.to_string())
-                                    })?
-                                    .map_err(|err| {
-                                        PackagesResolverError::ArchiveExtractionError(err.to_string())
-                                    })?;
-                            }
+                            ResourceFormat::Archive(ResourceArchiveFormat::Tar) => Some(ArchiveFormat::Tar),
+                            ResourceFormat::Archive(ResourceArchiveFormat::Zip) => Some(ArchiveFormat::Zip),
+                            ResourceFormat::Archive(ResourceArchiveFormat::Sevenz) => Some(ArchiveFormat::Sevenz),
 
                             _ => unreachable!("non-archive format in archives-only processor")
-                        }
+                        };
+
+                        let archive = match format {
+                            Some(format) => Archive::open_with_format(&temp_path, format),
+                            None => Archive::open(&temp_path)
+                        };
+
+                        archive
+                            .ok_or_else(|| PackagesResolverError::ArchiveNotSupported(temp_path))?
+                            .extract(&temp_extract_path)?
+                            .wait()?;
 
                         // Move extracted files to the correct location
                         // and delete downloaded archive.
-                        let hash = Hash::for_entry(&tmp_extract_path)?;
+                        let hash = Hash::for_entry(&temp_extract_path)?;
                         let src_path = store.get_path(&hash);
 
                         if src_path.exists() {
                             std::fs::remove_dir_all(&src_path)?;
                         }
 
-                        std::fs::rename(tmp_extract_path, &src_path)?;
+                        std::fs::rename(temp_extract_path, &src_path)?;
                         std::fs::remove_file(temp_path)?;
 
                         // Verify hashes match.
