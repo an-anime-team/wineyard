@@ -1,3 +1,6 @@
+/// Version of the wineyard core library.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 pub mod rw_sync;
 pub mod buffer;
 
