@@ -140,7 +140,7 @@ impl Archive {
     pub fn extract_with_progress(
         &self,
         folder: impl AsRef<Path>,
-        progress: fn(u64, u64, u64)
+        progress: impl FnMut(u64, u64, u64) + Send + 'static
     ) -> Result<ArchiveExtractor, ArchiveError> {
         let folder = folder.as_ref();
 

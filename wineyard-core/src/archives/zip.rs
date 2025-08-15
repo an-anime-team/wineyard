@@ -52,7 +52,7 @@ pub fn get_entries(
 pub fn extract(
     archive: impl AsRef<Path>,
     folder: impl AsRef<Path>,
-    progress: fn(u64, u64, u64)
+    mut progress: impl FnMut(u64, u64, u64) + Send + 'static
 ) -> Result<ArchiveExtractor, ArchiveError> {
     let archive = archive.as_ref();
     let folder = folder.as_ref();
