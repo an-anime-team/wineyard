@@ -382,7 +382,7 @@ impl PackagesResolver {
                         };
 
                         archive
-                            .ok_or_else(|| PackagesResolverError::ArchiveNotSupported(temp_path))?
+                            .ok_or_else(|| PackagesResolverError::ArchiveNotSupported(temp_path.clone()))?
                             .extract(&temp_extract_path)?
                             .wait()?;
 
